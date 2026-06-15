@@ -1,0 +1,64 @@
+<html>
+    <head>
+        <title>Pokidex</title>
+    </head>
+    <style>
+        body{
+            display:flex;
+            flex-direction:column;
+            justify-content:flex-start;
+            align-items:center;
+            gap: 15px;
+            background-color:rgb(155, 218, 243);
+            color:rgb(0,0,0);
+        }
+        #result{
+            padding: 15px;
+            display:flex;
+            flex-direction:column;
+            justify-content:center;
+            align-items:flex-start;
+            background-color: rgb(236, 228, 153);
+            color: black;
+            border: 2px solid black;
+            border-radius: 10px;
+        }
+        input{
+            height: 30px;
+            width: 300px;
+            border: 2px solid black;
+            border-radius: 10px;
+        }
+        button{
+            height: 30px;
+            width: 100px;
+            border: 2px solid black;
+            border-radius: 10px;
+        }
+    </style>
+    <body>
+        <h1>Pokidex: The pokemon encyclopedia !!</h1>
+        <input id="input" type="number" placeholder="enter pokemon id: ANY FROM 1 TO 1000">
+        <button onClick="getDetails()">Submit ID</button>
+        <div id="result"></div>
+        <script>
+            async function getDetails(){
+                let id = document.getElementById("input").value;
+                let response = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
+                let data = await response.json();
+                console.log(data);
+
+                let name = data.name;
+                let url = data.sprites.front_default;
+
+                document.getElementById("result").innerHTML = `
+                <img src="${url}" height="350px">
+                <h3><b>Name: </b>${name}</h3>
+                <p><b>Base_experience: </b>${data.base_experience}</p>
+                <p><b>Height: </b>${data.height}</p>
+                <p><b>Weight: </b>${data.weight}</p>
+                `
+            }
+        </script>
+    </body>
+</html>
