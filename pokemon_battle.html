@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Pokemon Battle</title>
+    <style>
+    body {
+        font-family: Arial, sans-serif;
+        background: #f4f6f8;
+        text-align: center;
+        margin: 0;
+        padding: 30px;
+    }
+
+    .browser {
+        max-width: 700px;
+        margin: auto;
+        background: white;
+        border: 1px solid #ddd;
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    .topbar {
+        background: #222;
+        color: white;
+        padding: 12px;
+        font-weight: bold;
+    }
+
+    .arena {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        padding: 30px;
+    }
+
+    .pokemon1,
+    .pokemon2 {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    img {
+        width: 120px;
+    }
+
+    .info h2 {
+        margin: 0;
+        text-transform: capitalize;
+    }
+
+    .bottom {
+        padding: 20px;
+        border-top: 1px solid #ddd;
+    }
+
+    .log {
+        margin-bottom: 15px;
+    }
+
+    button {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 8px;
+        background: #222;
+        color: white;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background: #444;
+    }
+</style>
+</head>
+<body>
+
+    <h1>Battle Arena</h1>
+
+    <div class="browser">
+
+        <div class="topbar">
+            Pokemon Battle Simulator
+        </div>
+
+        <div class="arena">
+
+            <div class="pokemon1">
+                <div class="info">
+                    <h2 id="name1"></h2>
+                    <span id="power1"></span>
+                </div>
+                <img id="img1">
+            </div>
+
+            <div class="pokemon2">
+                <img id="img2">
+
+                <div class="info">
+                    <h2 id="name2"></h2>
+                    <span id="power2"></span>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="bottom">
+
+            <div class="log">
+                <h3>Battle Log</h3>
+                <p id="battleLog">
+                    Click Start Battle
+                </p>
+            </div>
+
+            <button onclick="startBattle()">
+                Start Battle!
+            </button>
+
+        </div>
+
+    </div>
+
+<script>
+    async function getPokemon(id){
+
+    const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
+
+    const data = await response.json();
+
+    let totalPower = 0;
+
+    data.stats.forEach(function(stat){
+        totalPower += stat.base_stat;
+    });
+
+    return{
+        name:data.name,
+        image:data.sprites.front_default,
+        power:totalPower
+        };
+    }
+
+async function startBattle(){
+
+    let random1 = Math.floor(Math.random()*151)+1;
+    let random2 = Math.floor(Math.random()*151)+1;
+
+    let pokemon1 = await getPokemon(random1);
+    let pokemon2 = await getPokemon(random2);
+
+    document.getElementById("name1").innerHTML = pokemon1.name;
+    document.getElementById("name2").innerHTML = pokemon2.name;
+
+    document.getElementById("img1").src = pokemon1.image;
+    document.getElementById("img2").src = pokemon2.image;
+
+    document.getElementById("power1").innerHTML = "Power : " + pokemon1.power;
+    document.getElementById("power2").innerHTML = "Power : " + pokemon2.power;
+
+    if(pokemon1.power > pokemon2.power){
+        document.getElementById("battleLog").innerHTML = pokemon1.name + " wins against " + pokemon2.name + " with power " + pokemon1.power;
+    }
+    else if(pokemon2.power > pokemon1.power){
+        document.getElementById("battleLog").innerHTML = pokemon2.name + " wins against " + pokemon1.name + " with power " + pokemon2.power;
+    }
+    else{
+        document.getElementById("battleLog").innerHTML = "Battle Draw!";
+    }
+}
+</script>
+
+</body>
+</html>
